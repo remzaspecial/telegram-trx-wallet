@@ -17,8 +17,8 @@ export class TronProvider {
   public CONTRACT: string = process.env.USDT_CONTRACT!;
   logger: any;
   constructor(options: ITronProviderOptions) {
-    this.tronWeb = new TronWeb(options);
     this.logger = logger;
+    this.tronWeb = new TronWeb(options);
   }
 
   async configureContract() {
@@ -45,8 +45,14 @@ export class TronProvider {
     }
   }
 
-  async transfer(from: string, contract: string, privateKey: string, to: string, amount: number) {
-    this.logger.info(`Transfering USDT to address ${to} with amount ${amount}`); 
+  async transfer(
+    from: string,
+    contract: string,
+    privateKey: string,
+    to: string,
+    amount: number
+  ) {
+    this.logger.info(`Transfering USDT to address ${to} with amount ${amount}`);
     try {
       this.logger.warn(`Creating transaction on TRC20`);
       const options = {
@@ -78,9 +84,13 @@ export class TronProvider {
   }
 
   async transferTRX(privateKey: string, to: string, amount: number) {
-    this.logger.info(`Transfering TRX to address ${to} with amount ${amount}`); 
+    this.logger.info(`Transfering TRX to address ${to} with amount ${amount}`);
     try {
-      return await this.tronWeb.trx.sendTransaction(to, amount * 1000000, privateKey);
+      return await this.tronWeb.trx.sendTransaction(
+        to,
+        amount * 1000000,
+        privateKey
+      );
     } catch (e: any) {
       throw new Error(e);
     }
@@ -88,14 +98,14 @@ export class TronProvider {
 
   async balancesByAddress(address: any): Promise<IUserBalance> {
     try {
-      console.log('address is inside provider', address)
+      console.log('address is inside provider', address);
       const trxBalance = await this.tronWeb.trx.getBalance(address);
       const usdtContract = await this.configureContract();
       const usdtBalance = await usdtContract.methods.balanceOf(address).call();
       const result: IUserBalance = {
         address: address,
-        trxBalance: this.tronWeb.toDecimal(trxBalance)/1000000,
-        usdtBalance: this.tronWeb.toDecimal(usdtBalance)/1000000,
+        trxBalance: this.tronWeb.toDecimal(trxBalance) / 1000000,
+        usdtBalance: this.tronWeb.toDecimal(usdtBalance) / 1000000,
       };
       return result;
     } catch (e: any) {
