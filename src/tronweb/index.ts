@@ -6,6 +6,8 @@ import {
 } from './interfaces';
 import fetch from 'node-fetch';
 import getLogger from '../logger';
+const bip39 = require('bip39');
+import hdkey from 'hdkey';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -34,11 +36,24 @@ export class TronProvider {
   async generateDepositAddress(): Promise<IKeyPair> {
     this.logger.info('Creating deposit address on TRC20');
     try {
-      const keyPair = await this.tronWeb.createAccount();
-      console.log(keyPair);
+      // Generate a 12-word mnemonic phrase
+      const mnemonic = await bip39.generateMnemonic();
+
+      // Derive a private key from the mnemonic
+      const seed = await bip39.mnemonicToSeed(mnemonic);
+      const root = hdkey.fromMasterSeed(seed);
+      const privateKey = root
+        .derive("m/44'/195'/0'/0/0")
+        .privateKey.toString('hex');
+
+      // Create a TRON address from the private key
+      console.log('private key is', privateKey);
+      const address = this.tronWeb.address.fromPrivateKey(privateKey);
+      console.log('address is', address);
+
       return {
-        address: keyPair.address.base58,
-        privateKey: keyPair.privateKey.toLowerCase(),
+        address: address,
+        privateKey: mnemonic,
       } as IKeyPair;
     } catch (e: any) {
       throw new Error(e);
@@ -48,12 +63,19 @@ export class TronProvider {
   async transfer(
     from: string,
     contract: string,
-    privateKey: string,
+    mnemonic: string,
     to: string,
     amount: number
   ) {
     this.logger.info(`Transfering USDT to address ${to} with amount ${amount}`);
     try {
+      // Derive private key from mnemonic phrase
+      const seed = await bip39.mnemonicToSeed(mnemonic);
+      const root = hdkey.fromMasterSeed(seed);
+      const privateKey = root
+        .derive("m/44'/195'/0'/0/0")
+        .privateKey.toString('hex');
+
       this.logger.warn(`Creating transaction on TRC20`);
       const options = {
         feeLimit: 100000000,
