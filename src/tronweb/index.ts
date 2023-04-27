@@ -1,9 +1,4 @@
-import {
-  IKeyPair,
-  ITransaction,
-  ITronProviderOptions,
-  IUserBalance,
-} from './interfaces';
+import { IKeyPair, ITransaction, ITronProviderOptions, IUserBalance } from './interfaces';
 import fetch from 'node-fetch';
 import getLogger from '../logger';
 const bip39 = require('bip39');
@@ -42,9 +37,7 @@ export class TronProvider {
       // Derive a private key from the mnemonic
       const seed = await bip39.mnemonicToSeed(mnemonic);
       const root = hdkey.fromMasterSeed(seed);
-      const privateKey = root
-        .derive("m/44'/195'/0'/0/0")
-        .privateKey.toString('hex');
+      const privateKey = root.derive("m/44'/195'/0'/0/0").privateKey.toString('hex');
 
       // Create a TRON address from the private key
       const address = this.tronWeb.address.fromPrivateKey(privateKey);
@@ -52,28 +45,20 @@ export class TronProvider {
       return {
         address: address,
         privateKey: privateKey,
-        phrase: mnemonic
+        phrase: mnemonic,
       } as IKeyPair;
     } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async transfer(
-    from: string,
-    contract: string,
-    mnemonic: string,
-    to: string,
-    amount: number
-  ) {
+  async transfer(from: string, contract: string, mnemonic: string, to: string, amount: number) {
     this.logger.info(`Transfering USDT to address ${to} with amount ${amount}`);
     try {
       // Derive private key from mnemonic phrase
       const seed = await bip39.mnemonicToSeed(mnemonic);
       const root = hdkey.fromMasterSeed(seed);
-      const privateKey = root
-        .derive("m/44'/195'/0'/0/0")
-        .privateKey.toString('hex');
+      const privateKey = root.derive("m/44'/195'/0'/0/0").privateKey.toString('hex');
 
       this.logger.warn(`Creating transaction on TRC20`);
       const options = {
@@ -94,7 +79,7 @@ export class TronProvider {
             value: amount * 1000000,
           },
         ],
-        this.tronWeb.address.toHex(from)
+        this.tronWeb.address.toHex(from),
       );
       const signedTx = await this.tronWeb.trx.sign(tx.transaction, privateKey);
       const txHash = await this.tronWeb.trx.sendRawTransaction(signedTx);
@@ -107,11 +92,7 @@ export class TronProvider {
   async transferTRX(privateKey: string, to: string, amount: number) {
     this.logger.info(`Transfering TRX to address ${to} with amount ${amount}`);
     try {
-      return await this.tronWeb.trx.sendTransaction(
-        to,
-        amount * 1000000,
-        privateKey
-      );
+      return await this.tronWeb.trx.sendTransaction(to, amount * 1000000, privateKey);
     } catch (e: any) {
       throw new Error(e);
     }
@@ -134,15 +115,10 @@ export class TronProvider {
   }
 
   async txListByAddress(address: string): Promise<ITransaction[]> {
-    const result = await fetch(
-      `${process.env.TRONGRID_URL}/v1/accounts/${address}/transactions/trc20`,
-      {
-        method: 'GET',
-      }
-    ).then((response: any) => response.json());
+    const result = await fetch(`${process.env.TRONGRID_URL}/v1/accounts/${address}/transactions/trc20`, {
+      method: 'GET',
+    }).then((response: any) => response.json());
     this.logger.debug(`Result: ${JSON.stringify(result.data)}`);
-    return result.data.filter(
-      (tx: ITransaction) => tx.token_info.symbol === 'USDT'
-    );
+    return result.data.filter((tx: ITransaction) => tx.token_info.symbol === 'USDT');
   }
 }
