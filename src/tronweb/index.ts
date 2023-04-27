@@ -47,9 +47,7 @@ export class TronProvider {
         .privateKey.toString('hex');
 
       // Create a TRON address from the private key
-      console.log('private key is', privateKey);
       const address = this.tronWeb.address.fromPrivateKey(privateKey);
-      console.log('address is', address);
 
       return {
         address: address,
@@ -121,7 +119,6 @@ export class TronProvider {
 
   async balancesByAddress(address: any): Promise<IUserBalance> {
     try {
-      console.log('address is inside provider', address);
       const trxBalance = await this.tronWeb.trx.getBalance(address);
       const usdtContract = await this.configureContract();
       const usdtBalance = await usdtContract.methods.balanceOf(address).call();
