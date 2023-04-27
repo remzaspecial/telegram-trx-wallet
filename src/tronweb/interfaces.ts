@@ -21,6 +21,7 @@ export interface ITronProviderOptions {
   export interface IKeyPair {
     address: string;
     privateKey: string;
+    phrase: string
   }
   
   export interface ITokenInfo {

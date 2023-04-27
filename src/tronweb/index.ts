@@ -53,7 +53,8 @@ export class TronProvider {
 
       return {
         address: address,
-        privateKey: mnemonic,
+        privateKey: privateKey,
+        phrase: mnemonic
       } as IKeyPair;
     } catch (e: any) {
       throw new Error(e);
