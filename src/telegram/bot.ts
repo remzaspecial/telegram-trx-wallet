@@ -2,6 +2,7 @@
 import { Telegraf } from "telegraf";
 import { TronProvider } from "../tronweb";
 import * as dotenv from 'dotenv';
+import config from "../config/config";
 dotenv.config();
 
 export class WalletBot {
@@ -9,30 +10,46 @@ export class WalletBot {
     public bot: Telegraf;
     constructor() {
         this.tronProvider = new TronProvider({
-        fullHost: process.env.TRON_FULL_HOST! || 'https://api.nileex.io',
-        fullNodeURL: process.env.TRON_FULL_NODE_URL! || 'https://api.nileex.io',
+        fullHost: config.TRON_FULL_HOST || 'https://api.nileex.io',
+        fullNodeURL: config.TRON_FULL_NODE_URL || 'https://api.nileex.io',
         });
-        this.bot = new Telegraf('6113184450:AAGcjnSRnnpR8T0d3Uk3jhzP4SCe-7a_TzQ');
+        this.bot = new Telegraf(config.BOT_TOKEN);
     }
 
     async generateKeyPair() {
-        const keyPair = await this.tronProvider.generateDepositAddress();
-        return keyPair;
+        try {
+            const keyPair = await this.tronProvider.generateDepositAddress();
+            return keyPair;
+        } catch (e: any){
+            throw new Error(e)
+        }
     }
 
     async transferTRX(privateKey: string, to: string, amount: number) {
-        const result = await this.tronProvider.transferTRX(privateKey, to, amount);
-        return result;
+        try {
+            const result = await this.tronProvider.transferTRX(privateKey, to, amount);
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
     }
 
     async transfer(from: string, contract: string, privateKey: string, to: string, amount: number) {
-        const result = await this.tronProvider.transfer(from, contract, privateKey, to, amount);
-        return result;
+        try {
+            const result = await this.tronProvider.transfer(from, contract, privateKey, to, amount);
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
     }
 
     async getBalance(address: string) {
-        const result = await this.tronProvider.balancesByAddress(address);
-        return result;
+        try {
+            const result = await this.tronProvider.balancesByAddress(address);
+            return result;
+        } catch (e: any) {
+            throw new Error(e);
+        }
     }
 
     async start() {

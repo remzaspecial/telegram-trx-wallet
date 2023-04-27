@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-undef
-import Module = NodeJS.Module;
 import winston from 'winston';
 const { printf } = winston.format;
 
