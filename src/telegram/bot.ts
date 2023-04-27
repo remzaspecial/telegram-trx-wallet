@@ -1,9 +1,7 @@
 // create class WalletBot that uses the ../tronweb/index.ts class methods
 import { Telegraf } from "telegraf";
 import { TronProvider } from "../tronweb";
-import * as dotenv from 'dotenv';
 import config from "../config/config";
-dotenv.config();
 
 export class WalletBot {
     private tronProvider: any;
