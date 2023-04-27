@@ -4,32 +4,46 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts"
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint --ext .ts src/",
+    "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,html,css}\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/remzaspecial/telegram-trx-wallet.git"
   },
-  "author": "",
+  "author": "Rustam Ramazanov",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/remzaspecial/telegram-trx-wallet/issues"
   },
   "homepage": "https://github.com/remzaspecial/telegram-trx-wallet#readme",
-  "devDependencies": {
-    "@types/nconf": "^0.10.3",
-    "@types/node": "^18.15.3",
-    "@types/node-fetch": "^2.6.2",
-    "ts-node-dev": "^2.0.0"
-  },
   "dependencies": {
+    "bip39": "^3.1.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
+    "hdkey": "^2.1.0",
     "nconf": "^0.12.0",
     "node-fetch": "^2.6.9",
     "telegraf": "^4.12.2",
     "tronweb": "^5.1.0",
     "typescript": "^5.0.2",
     "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/hdkey": "^2.0.1",
+    "@types/nconf": "^0.10.3",
+    "@types/node": "^18.15.3",
+    "@types/node-fetch": "^2.6.2",
+    "ts-node-dev": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.3.2"
   }
 }

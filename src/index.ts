@@ -1,4 +1,4 @@
-import { WalletBot } from "./telegram/bot";
+import { WalletBot } from './telegram/bot';
 
 const bot = new WalletBot();
 bot.start();
